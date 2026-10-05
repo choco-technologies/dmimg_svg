@@ -24,11 +24,13 @@ set(DMOD_BUILD_EXAMPLES OFF CACHE BOOL "Build examples")
 set(DMOD_BUILD_TOOLS OFF CACHE BOOL "Build tools")
 set(DMOD_BUILD_TEMPLATES OFF CACHE BOOL "Build templates")
 
-FetchContent_MakeAvailable(dmod)
-
+# project() before FetchContent_MakeAvailable(dmod): the compiler test runs
+# before dmod's tools-cfg.cmake adds its include directories (ARG_MAX on CI)
 project(dmimg_svg VERSION ${DMOD_MODULE_VERSION}
-    DESCRIPTION "dmimg_svg DMOD application module"
+    DESCRIPTION "SVG decoder (rasterizer) for dmimg"
     LANGUAGES C CXX)
+
+FetchContent_MakeAvailable(dmod)
 
 set(DMOD_DIR ${dmod_SOURCE_DIR} CACHE PATH "DMOD source directory")
 set(DMOD_SCRIPTS_DIR ${DMOD_DIR}/scripts CACHE PATH "DMOD scripts directory")
@@ -42,10 +44,7 @@ set(DMOD_MODULE_NAME        dmimg_svg)
 set(DMOD_AUTHOR_NAME        "Patryk Kubiak")
 
 # Stack size for the module (should be integer)
-set(DMOD_STACK_SIZE         4096)
-
-# Priority for the thread of the module (should be integer)
-set(DMOD_PRIORITY           0)
+set(DMOD_STACK_SIZE         1024)
 
 # Path to the .dmr file - enables release package creation in build/packages/
 set(DMOD_DMR_PATH           ${CMAKE_CURRENT_SOURCE_DIR}/dmimg_svg.dmr)
@@ -53,21 +52,30 @@ set(DMOD_DMR_PATH           ${CMAKE_CURRENT_SOURCE_DIR}/dmimg_svg.dmr)
 # List of MAL interfaces implemented by this module (leave empty if none)
 set(DMOD_MAL_IMPLS          )
 
+# List of DIF interfaces implemented by this module
+set(DMOD_DIF_IMPLS          dmimg)
+
 #
-#   dmod_add_executable - create an executable module
-#   it has the same signature as add_executable,
+#   dmod_add_library - create a library module
+#   it has the same signature as add_library
 #   and can be used in the same way after the creation
 #   (for example, to link libraries)
 #
-dmod_add_executable(${DMOD_MODULE_NAME} ${DMOD_MODULE_VERSION}
-    # List of source files - can include C and C++ files
+dmod_add_library(${DMOD_MODULE_NAME} ${DMOD_MODULE_VERSION}
     src/dmimg_svg.c
+    src/nanosvg.c
+    src/svg_libc.c
 )
 
-# To depend on another module's headers, use:
-#   dmod_link_modules(${DMOD_MODULE_NAME}
-#       other_module@1.0
-#   )
+dmod_link_modules(${DMOD_MODULE_NAME}
+    dmimg@>=0.1
+)
+
+# nanosvg (third_party/nanosvg, zlib): built in src/nanosvg.c, on the C
+# library of src/svg_libc.c
+target_include_directories(${DMOD_MODULE_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nanosvg
+)
 
 enable_testing()
 add_subdirectory(tests)

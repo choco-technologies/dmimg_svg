@@ -1,11 +1,19 @@
 set(DMOD_MODULE_NAME        test_dmimg_svg)
 set(DMOD_MODULE_VERSION     ${PROJECT_VERSION})
 set(DMOD_AUTHOR_NAME        "Patryk Kubiak")
-set(DMOD_STACK_SIZE         1024)
+set(DMOD_STACK_SIZE         16384)
 set(DMOD_PRIORITY           0)
 
 dmod_add_test(${DMOD_MODULE_NAME} ${DMOD_MODULE_VERSION}
     dmimg_svg_test.c
+)
+
+dmod_link_modules(${DMOD_MODULE_NAME}
+    dmimg@>=0.1
+)
+
+target_compile_definitions(${DMOD_MODULE_NAME} PRIVATE
+    DMIMG_SVG_FIXTURES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
 )
 
 # Register the test module with ctest - this replays the same two steps CI

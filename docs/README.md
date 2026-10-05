@@ -1,10 +1,10 @@
 # dmimg_svg Documentation
 
-Welcome to the dmimg_svg module documentation.
+The SVG decoder plugin of dmimg - a rasterizer.
 
 ## Contents
 
-- **[api-reference.md](api-reference.md)** - Command-line usage and behavior
+- **[api-reference.md](api-reference.md)** - what the decoder implements and how it behaves
 
 View documentation using `dmf-man`:
 

@@ -29,5 +29,8 @@ inc=./include => ${destination}/${module}/include [origin=${repo_dir}/include] [
 # License file
 license=./LICENSE => ${destination}/${module}/LICENSE [origin=${repo_dir}/LICENSE]
 
+# nanosvg (zlib), which the decoder is built on
+license_nanosvg=./LICENSE.nanosvg => ${destination}/${module}/LICENSE.nanosvg [origin=${repo_dir}/third_party/nanosvg/LICENSE]
+
 # Adding itself
 dmr=./${module}.dmr => ${destination}/${module}/${module}.dmr [origin=${repo_dir}/${module}.dmr]

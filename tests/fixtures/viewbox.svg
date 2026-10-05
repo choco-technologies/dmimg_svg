@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- halves.svg twice its size: the viewBox scaled to the width and height -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 8 6">
+  <rect x="0" y="0" width="4" height="6" fill="red"/>
+  <rect x="4" y="0" width="4" height="6" fill="#00f"/>
+</svg>
